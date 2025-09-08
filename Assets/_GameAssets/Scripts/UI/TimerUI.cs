@@ -15,12 +15,33 @@ public class TimerUI : MonoBehaviour
     private Tween _rotationTween;
     private string _finalTime;
 
+    // --- EKLENEN KISIM ---
+    private bool timerDelayActive = true;
+    private float timerDelay = 5f;
+    private float timerDelayTimer = 0f;
+    // --- EKLENEN KISIM SONU ---
+
     private void Start()
     {
         PlayRotationAnimation();
-        StartTimer();
-
+        //StartTimer(); // Otomatik başlatma kaldırıldı
         GameManager.Instance.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+
+    private void Update()
+    {
+        // --- EKLENEN KISIM ---
+        if (timerDelayActive)
+        {
+            timerDelayTimer += Time.deltaTime;
+            if (timerDelayTimer >= timerDelay)
+            {
+                timerDelayActive = false;
+                StartTimer();
+            }
+            return;
+        }
+        // --- EKLENEN KISIM SONU ---
     }
 
     private void GameManager_OnGameStateChanged(GameState gameState)
@@ -30,14 +51,12 @@ public class TimerUI : MonoBehaviour
             case GameState.Pause:
                 StopTimer();
                 break;
-
             case GameState.Resume:
                 ResumeTimer();
                 break;
             case GameState.GameOver:
                 FinishTimer();
                 break;
-
         }
     }
 
@@ -47,7 +66,6 @@ public class TimerUI : MonoBehaviour
             .SetEase(_rotationEase)
             .SetLoops(-1, LoopType.Restart);
     }
-
 
     private void StartTimer()
     {
@@ -77,7 +95,6 @@ public class TimerUI : MonoBehaviour
     {
         StopTimer();
         _finalTime = GetFormattedlapsedTime();
-
     }
 
     private string GetFormattedlapsedTime()

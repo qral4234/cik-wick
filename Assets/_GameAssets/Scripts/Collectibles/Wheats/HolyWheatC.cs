@@ -9,7 +9,9 @@ public class HolyWheatC : MonoBehaviour, ICollectible
     public void Collect()
     {
         _moveController.setJumpForce(_wheatDesignSO.IncreaseDecraseMultiplier, _wheatDesignSO.ResetBoostDuration);
+        AudioManager.Instance.Play(SoundType.PickupGoodSound);
         Destroy(gameObject);
+        
     }
     
 

@@ -66,5 +66,5 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj"
     },
-    "dotnet.defaultSolution": "wickgame-tutorial.sln"
+    "dotnet.defaultSolution": "cik-wick.sln"
 }

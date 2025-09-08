@@ -67,7 +67,6 @@ private void Update()
     private void SetChaseMovement()
     {
         _isChasing = true;
-
         Vector3 directionToPlayer = (_playerTransform.position - transform.position).normalized;
         Vector3 offsetPosition = _playerTransform.position - directionToPlayer * _chaseDistanceThreshold;
         _catAgent.SetDestination(offsetPosition);

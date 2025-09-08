@@ -29,62 +29,76 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
-
+        else
+        {
+            Destroy(gameObject); // Singleton koruması
+            return;
+        }
+        // DOTween kapasitesini başta ayarla
+        DG.Tweening.DOTween.SetTweensCapacity(500, 50);
     }
 
     private void Start()
     {
-        HealthManager.Instance.OnPlayerDeath += HealthManager_OnPlayerDeath;
-        _catController.OnCatCatched += CatController_OnCatCatched;
+        if (HealthManager.Instance != null)
+            HealthManager.Instance.OnPlayerDeath += HealthManager_OnPlayerDeath;
+        if (_catController != null)
+            _catController.OnCatCatched += CatController_OnCatCatched;
 
     }
 
     private void CatController_OnCatCatched()
     {
-        _playerHealthUI.AnimatedamageForAll();
-        StartCoroutine(OnGameOver());
+        if (_playerHealthUI != null)
+            _playerHealthUI.AnimatedamageForAll();
+        StartCoroutine(OnGameOver(true));
     }
 
     private void HealthManager_OnPlayerDeath()
     {
-        StartCoroutine(OnGameOver());
+        StartCoroutine(OnGameOver(false));
     }
 
     void OnEnable()
     {
         ChangeGameState(GameState.Play);
+        if (BackgroundMusic.Instance != null)
+            BackgroundMusic.Instance.PlayBackgroundMusic(true);
     }
 
     public void ChangeGameState(GameState gameState)
     {
         OnGameStateChanged?.Invoke(gameState);
         _currentGameState = gameState;
-        Debug.Log($"Game State changed to: {gameState}");
+
     }
 
     public void OnEggCollected()
     {
         currentEggCount++;
-        _eggCounterUI.SetEggCounterText(currentEggCount, maxEggCount);
-
-
-
+        if (_eggCounterUI != null)
+            _eggCounterUI.SetEggCounterText(currentEggCount, maxEggCount);
         if (currentEggCount == maxEggCount)
         {
-
-            _eggCounterUI.SettEggComplated();
+            if (_eggCounterUI != null)
+                _eggCounterUI.SettEggComplated();
             ChangeGameState(GameState.GameOver);
-            _winLoseUI.OnGameWin();
+            if (_winLoseUI != null)
+                _winLoseUI.OnGameWin();
         }
-
-
     }
 
-    private IEnumerator OnGameOver()
+    private IEnumerator OnGameOver(bool isCatcatched)
     {
         yield return new WaitForSeconds(_delay);
         ChangeGameState(GameState.GameOver);
-        _winLoseUI.OnGameLose();
+        if (_winLoseUI != null)
+            _winLoseUI.OnGameLose();
+        if (isCatcatched && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play(SoundType.CatSound);
+        }
+        
     }
 
 

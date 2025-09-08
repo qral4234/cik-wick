@@ -54,6 +54,12 @@ public class PlayerStateUI : MonoBehaviour
 
     private MoveController _moveController;
 
+    // --- EKLENEN KISIM ---
+    private bool uiDelayActive = true;
+    private float uiDelay = 5f;
+    private float uiDelayTimer = 0f;
+    // --- EKLENEN KISIM SONU ---
+
     // Pozisyonlar (kendi UI yerleşimine göre ayarlayabilirsin)
     private Vector2 _walkingActivePos = new Vector2(-20f, 62f);
     private Vector2 _walkingPassivePos = new Vector2(-90f, 62f);
@@ -69,13 +75,33 @@ public class PlayerStateUI : MonoBehaviour
 
     private void Awake()
     {
-        _moveController = FindObjectOfType<MoveController>();
+        _moveController = FindFirstObjectByType<MoveController>();
         if (_moveController != null)
             _moveController.OnSlidingStateChanged += OnSlidingStateChanged;
 
-        // Oyun başında mevcut duruma göre UI'yı ayarla
-        if (_moveController != null)
-            OnSlidingStateChanged(_moveController.IsSliding());
+        // İlk başta her şey kapalı
+        _playerwalkingTransform.anchoredPosition = _walkingPassivePos;
+        _playerSlidingTransform.anchoredPosition = _slidingPassivePos;
+        _playerWalkingImage.sprite = _playerWalkingPassiveSprite;
+        _playerSlidingImage.sprite = _playerSlidingPassiveSprite;
+    }
+
+    private void Update()
+    {
+        if (uiDelayActive)
+        {
+            uiDelayTimer += Time.deltaTime;
+            if (uiDelayTimer >= uiDelay)
+            {
+                uiDelayActive = false;
+                // 5sn sonunda walking UI aktif olsun
+                _playerwalkingTransform.anchoredPosition = _walkingActivePos;
+                _playerSlidingTransform.anchoredPosition = _slidingPassivePos;
+                _playerWalkingImage.sprite = _playerWalkingActiveSprite;
+                _playerSlidingImage.sprite = _playerSlidingPassiveSprite;
+            }
+            return;
+        }
     }
 
     private void OnDestroy()
@@ -87,6 +113,7 @@ public class PlayerStateUI : MonoBehaviour
     // Soldaki hareket UI'ları için event fonksiyonu
     private void OnSlidingStateChanged(bool isSliding)
     {
+        if (uiDelayActive) return; // 5sn boyunca UI güncellenmesin
         if (isSliding)
         {
             _playerSlidingTransform.DOAnchorPos(_slidingActivePos, _moveDuration).SetEase(_moveEase);

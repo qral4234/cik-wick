@@ -9,6 +9,7 @@ public class RottenWheatC : MonoBehaviour , ICollectible
     public void Collect()
     {
        _moveController.setMovemetSpeed(_wheatDesignSO.IncreaseDecraseMultiplier, _wheatDesignSO.ResetBoostDuration);
-        Destroy(gameObject);
+       Destroy(gameObject);
+       AudioManager.Instance.Play(SoundType.PickupBadSound);
     }
 }

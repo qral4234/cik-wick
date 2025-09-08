@@ -13,7 +13,11 @@ public class PlayerController : MonoBehaviour
     private MoveController _moveController;
     private PlayerAnimationController _playerAnimationController;
 
-
+    // --- EKLENEN KISIM ---
+    private bool allowMoveController = false;
+    private float moveControllerDelay = 5f;
+    private float moveControllerTimer = 0f;
+    // --- EKLENEN KISIM SONU ---
 
     private void Awake()
     {
@@ -21,6 +25,10 @@ public class PlayerController : MonoBehaviour
         _playerRigidbody.freezeRotation = true;
         _moveController = GetComponent<MoveController>();
         _playerAnimationController = GetComponent<PlayerAnimationController>();
+        // --- EKLENEN KISIM ---
+        allowMoveController = false;
+        moveControllerTimer = 0f;
+        // --- EKLENEN KISIM SONU ---
     }
 
     private void Update()
@@ -30,7 +38,17 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-
+        // --- EKLENEN KISIM ---
+        if (!allowMoveController)
+        {
+            moveControllerTimer += Time.deltaTime;
+            if (moveControllerTimer >= moveControllerDelay)
+            {
+                allowMoveController = true;
+            }
+            return;
+        }
+        // --- EKLENEN KISIM SONU ---
 
         _moveController.SetInputs();
         _moveController.setPlayerDrag();
@@ -43,6 +61,13 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
+        // --- EKLENEN KISIM ---
+        if (!allowMoveController)
+        {
+            return;
+        }
+        // --- EKLENEN KISIM SONU ---
 
         // İleri-geri hareket
         float vertical = Input.GetAxis("Vertical");

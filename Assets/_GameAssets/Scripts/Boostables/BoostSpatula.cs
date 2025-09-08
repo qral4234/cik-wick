@@ -20,7 +20,7 @@ public class BoostSpatula : MonoBehaviour, IBoostables
 
         _isActive = true;
         Invoke(nameof(ResetActive), 0.2f);
-
+        AudioManager.Instance.Play(SoundType.SpatulaSound);
 
     }
 

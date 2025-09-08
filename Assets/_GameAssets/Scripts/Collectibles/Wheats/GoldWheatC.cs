@@ -9,8 +9,9 @@ public class GoldWheatC : MonoBehaviour , ICollectible
 
     public void Collect()
     {
-       _moveController.setMovemetSpeed(_wheatDesignSO.IncreaseDecraseMultiplier, _wheatDesignSO.ResetBoostDuration);
+        _moveController.setMovemetSpeed(_wheatDesignSO.IncreaseDecraseMultiplier, _wheatDesignSO.ResetBoostDuration);
         Destroy(gameObject);
+        AudioManager.Instance.Play(SoundType.PickupGoodSound);
     }
 
 

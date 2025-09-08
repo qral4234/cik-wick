@@ -72,12 +72,14 @@ public class MoveController : MonoBehaviour
             setJump();
             _canjump = false;
             Invoke(nameof(resetJumping), _jumpCooldown);
+            AudioManager.Instance.Play(SoundType.JumpSound);
         }
 
         if (_isSliding != prevSliding)
         {
             OnSlidingStateChanged?.Invoke(_isSliding);
         }
+ 
     }
 
     public void PlayerMovement()
